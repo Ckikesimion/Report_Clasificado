@@ -12,6 +12,38 @@
         <link rel="stylesheet" href="./resources/ol-layerswitcher.css">
         <link rel="stylesheet" href="./resources/qgis2web.css">
         <style>
+		.custom-dashboard {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1000;
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    width: 220px;
+    font-family: Arial, sans-serif;
+}
+
+.header-panel h2 { font-size: 16px; margin: 0; color: #2c3e50; }
+.seccion-filtro p { font-size: 12px; font-weight: bold; margin-bottom: 5px; }
+
+.botones-fila { display: flex; gap: 5px; margin-bottom: 10px; }
+
+.btn-year, .btn-cuatri {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    background: #f8f9fa;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-year.active, .btn-cuatri.active {
+    background: #007bff;
+    color: white;
+    border-color: #0056b3;
+}
         html, body {
             background-color: #ffffff;
         }
@@ -98,6 +130,31 @@ div[style*="max-width: 280px"] td { font-size: 9px !important; }
         <title></title>
     </head>
     <body>
+<div id="panel-principal" class="custom-dashboard">
+    <div class="header-panel">
+        <img src="images/logo.png" alt="Logo" style="width: 40px;">
+        <h2>Gestión Municipal</h2>
+    </div>
+
+    <!-- Nivel 1: Selección de Año -->
+    <div class="seccion-filtro">
+        <p>1. Seleccione el Año:</p>
+        <div class="botones-fila">
+            <button class="btn-year" onclick="seleccionarAnio('2024', this)">2024</button>
+            <button class="btn-year" onclick="seleccionarAnio('2025', this)">2025</button>
+        </div>
+    </div>
+
+    <!-- Nivel 2: Selección de Cuatrimestre (Oculto al inicio) -->
+    <div id="seccion-cuatri" class="seccion-filtro" style="display:none;">
+        <p>2. Seleccione Cuatrimestre:</p>
+        <div class="botones-fila">
+            <button class="btn-cuatri" onclick="cargarEscenario('C1', this)">I</button>
+            <button class="btn-cuatri" onclick="cargarEscenario('C2', this)">II</button>
+            <button class="btn-cuatri" onclick="cargarEscenario('C3', this)">III</button>
+        </div>
+    </div>
+</div>
 	<div id="titulo-fisico" style="position: absolute; top: 20px; left: 45%; transform: translateX(-50%); z-index: 4000; background: white; padding: 10px 20px; border: 2px solid #00B0F0; border-radius: 8px; display: none;">
     <h1 style="margin: 0; font-family: 'Segoe UI'; color: #00B0F0; font-size: 20px;">Resultado Físico Municipal 2025</h1>
 </div>
@@ -164,6 +221,33 @@ div[style*="max-width: 280px"] td { font-size: 9px !important; }
     document.getElementById('titulo-fisico').style.display = 'block';
     document.getElementById('titulo-presupuestario').style.display = 'none';
 </script>
+    <script>
+        document.getElementById('titulo-fisico').style.display = 'block';
+        document.getElementById('titulo-presupuestario').style.display = 'none';
+
+        // MUEVE EL NUEVO CÓDIGO DENTRO DE ESTE MISMO BLOQUE SCRIPT
+        let anioSeleccionado = "";
+
+        function seleccionarAnio(anio, elemento) {
+            anioSeleccionado = anio;
+            document.querySelectorAll('.btn-year').forEach(b => b.classList.remove('active'));
+            elemento.classList.add('active');
+            document.getElementById('seccion-cuatri').style.display = 'block';
+        }
+
+        function cargarEscenario(cuatri, elemento) {
+            document.querySelectorAll('.btn-cuatri').forEach(b => b.classList.remove('active'));
+            elemento.classList.add('active');
+            const nombreCapa = `Municipal_${anioSeleccionado}_${cuatri}`;
+            actualizarMapa(nombreCapa);
+        }
+
+        function actualizarMapa(capaID) {
+            console.log("Cambiando a escenario: " + capaID);
+            // Aquí integraremos la lógica de visibilidad de OpenLayers
+        }
+    </script>
+</body>
     </body>
  
 </html>
